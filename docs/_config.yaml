@@ -1,0 +1,13 @@
+remote_theme: b2a3e8/jekyll-theme-console
+
+title: DICE
+description: Diffusion Network for MIDI Transformation
+
+favicon: /assets/images/github-favicon.png
+style: dark
+
+header_pages:
+  - index.md
+  - getting-started.md
+  - license.md
+  - github.md

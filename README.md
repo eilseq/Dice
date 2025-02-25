@@ -1,6 +1,6 @@
 # DICE
 
-![DICE GitHub Banner](./docs/images/github-banner.png)
+![DICE GitHub Banner](./docs/assets/images/github-banner.png)
 
 [Download Page](https://github.com/eilseq/Dice/releases)
 
@@ -10,7 +10,7 @@
 
 Rather than focusing on outright generation, DICE refines, transforms, and reinterprets existing patterns in real time while preserving the original musical features.
 
-Built specifically for the Max/MSP environment a max external, and embedded into a MIDI Transformation Tool for Ableton, it enables seamless integration into both live performance and studio workflows.
+Built specifically for the Max/MSP environment as a max external, and embedded into a MIDI Transformation Tool for Ableton, it enables seamless integration into both live performance and studio workflows.
 
 ### Functionalities
 
@@ -54,7 +54,7 @@ Focusing on a minimal user experience, the goal of this tool is to bridge the ga
 ### Basic Usage
 
 1. **Input a 16x16 Matrix**  
-   Use Max's matrix UI to provide structured input data.
+   Like any other Ableton Live's MIDI Transformation Tool, create clip and select notes to provide structured input data to the model. This release is designed specifically for drum patterns, so it will act upon the first bar of notes in the conventionla drum rack range (additional info in Ableton Lesson).
 
 2. **Adjust Parameters**
 
@@ -63,7 +63,7 @@ Focusing on a minimal user experience, the goal of this tool is to bridge the ga
    - `seed`: Sets the random seed for consistent results across sessions.
 
 3. **Trigger Pattern Manipulation**  
-   Activate the process within your Max patch and observe how the input pattern is transformed based on the configured diffusion settings.
+   The tool provides a minimal user interface provided under clip view. Every control will trigger a MIDI transformation based on selected notes. Observe how the input pattern is transformed based on the configured diffusion settings.
 
 ---
 
