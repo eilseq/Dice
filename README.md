@@ -1,23 +1,72 @@
 # DICE
 
-## ML Model for Musical Pattern Generation in Max/MSP/Jitter
+![DICE GitHub Banner](./docs/images/github-banner.png)
 
-**DICE** is a Max external that uses a custom-trained model to generate musical patterns based on real-time suggestions from the user. Built with a focus on ethical machine learning, DICE does not utilize any external music datasets, ensuring an original approach to music generation.
+[Download Page](https://github.com/eilseq/Dice/releases)
 
-## Overview
+## Diffusion Network for MIDI Transformation
 
-- **Dynamic Pattern Generation**: Adapts to the musician's input to create responsive musical patterns.
-- **Ethical Data Use**: DICE is trained on a custom dataset designed specifically for this tool, avoiding the use of other musicians’ data.
-- **Seamless Max/MSP and Max for Live Integration**: Developed as a Max external for use in Max/MSP patches and Max for Live devices, compatible with Mac OS.
+**DICE** is a tool designed for advanced manipulation of musical patterns using a custom-trained machine learning model based on diffusion architectures.
 
-## Getting Started
+Rather than focusing on outright generation, DICE refines, transforms, and reinterprets existing patterns in real time while preserving the original musical features.
 
-Download DICE from the [Releases](./releases) section and add it to your Max setup to begin using the object in your patches.
+Built specifically for the Max/MSP environment a max external, and embedded into a MIDI Transformation Tool for Ableton, it enables seamless integration into both live performance and studio workflows.
 
-## License
+### Functionalities
 
-DICE is provided under an **All Rights Reserved** license, with allowances for musicians to create commercial music and audio assets. For details, see the [license](./LICENSE.md).
+Focusing on a minimal user experience, the goal of this tool is to bridge the gap between deterministic pattern manipulation and stochastic processes, allowing for a controlled but flexible approach to reshaping musical materials while limiting any form of bias related to style and genre.
+
+- **Pattern Manipulation through Diffusion**  
+  DICE employs a diffusion-based architecture to iteratively refine and reshape input patterns. This approach ensures that transformations retain musical coherence while introducing new structural possibilities.
+
+- **Real-Time Interaction**  
+  Designed for Ableton users, DICE responds instantly to user adjustments, enabling dynamic manipulation of musical sequences within a Max patch. Parameters like `threshold`, `noiseLevel`, and `seed` provide granular control over the transformation process.
+
+- **Matrix-Based Input**  
+  The system operates on a 16x16 matrix input, allowing users to define initial states that DICE can then expand upon, invert, or alter based on diffusion steps and user-defined parameters.
+
+- **Integration with Max/MSP and Max for Live**  
+  Fully compatible with Max/MSP and Max for Live, DICE can be embedded into existing workflows or used as a standalone tool.
+
+### Ethical Considerations
+
+- **Custom Dataset Use**  
+  DICE is trained on a purpose-built synthetic dataset, ensuring that it does not rely on copyrighted or external musical material.
+
+- **Transparency in Manipulation**  
+  The diffusion-based architecture allows users to trace how patterns evolve through each manipulation stage, offering clarity in how changes occur. Every transformation depends only from the current set of parameters and input notes, so that generations on same states will give consistent results.
+
+- **User-Driven Control**  
+  Emphasizing the musician's role as the primary creative agent, DICE ensures that its manipulations serve the artist’s intent, rather than imposing algorithmic biases, while offering a minimal user interface.
 
 ---
 
-DICE supports creativity in music without compromising data integrity or artistic respect.
+## Getting Started
+
+### Installation
+
+1. **Download DICE**  
+   Access the [Releases](https://github.com/eilseq/Dice/releases) section to download the external.
+
+2. **Open Ableton Project and Follow Lesson**  
+   The bundle comes with an Ableton Live project containing examples of DICE use and accurate documentation on how to generate clips and install the tool globally.
+
+### Basic Usage
+
+1. **Input a 16x16 Matrix**  
+   Use Max's matrix UI to provide structured input data.
+
+2. **Adjust Parameters**
+
+   - `threshold`: Controls the cutoff for pattern retention or alteration.
+   - `noiseLevel`: Determines the intensity of stochastic perturbations during diffusion.
+   - `seed`: Sets the random seed for consistent results across sessions.
+
+3. **Trigger Pattern Manipulation**  
+   Activate the process within your Max patch and observe how the input pattern is transformed based on the configured diffusion settings.
+
+---
+
+## License
+
+DICE is provided under an **All Rights Reserved** license. While musicians are free to use it for commercial music and audio asset creation, redistribution or modification of the source code requires explicit permission. Full license details can be found in the [LICENSE](./LICENSE.md).
