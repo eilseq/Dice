@@ -32,3 +32,6 @@ dist/
 # System files
 .DS_Store
 Thumbs.db
+
+# Imported JSON Assets
+json
