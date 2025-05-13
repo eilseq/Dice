@@ -13,7 +13,7 @@ class PatternDataset(Dataset):
         return len(self.patterns)
 
     def __getitem__(self, idx: int):
-        return self.patterns[idx].get_tensor()
+        return self.patterns[idx].get_trigger_tensor()
 
     def get_pattern(self, idx: int):
         return self.patterns[idx]

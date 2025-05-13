@@ -54,11 +54,15 @@ class Sequence:
             chain(*[cluster.triggers for cluster in self.clusters]))
         return triggers
 
-    def get_tensor(self):
-        # Returns the triggers of sequence into a 1D tensor
-        tensor = torch.tensor(
-            self.get_triggers(), device=device, dtype=torch.float32).view(-1)
-        return tensor
+    def get_trigger_tensor(self):
+        triggers = self.get_triggers()
+        tensor = torch.tensor(triggers, device=device,
+                              dtype=torch.float32).view(-1)
+        return (tensor > 0).float()  # ensures values are 0 or 1
+
+    def is_empty(self):
+        # Returns True if all elements in the tensor are zero
+        return torch.all(self.get_trigger_tensor() == 0).item()
 
     @staticmethod
     def create_random(config: RandomSequenceConfig) -> 'Sequence':
