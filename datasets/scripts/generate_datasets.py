@@ -10,19 +10,30 @@ from rich.progress import Progress, Live, BarColumn, TimeElapsedColumn, TaskProg
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Process some inputs.")
-    parser.add_argument('--preset', type=str, required=True,
-                        help='Selected pattern preset')
+    parser.add_argument('--json', type=str, required=True,
+                        help='Selected folder containing patterns in JSON format')
 
-    parser.add_argument('--size', type=str, required=True,
-                        help='Selected pattern preset')
+    parser.add_argument('--augmentation_factor', type=str, required=True,
+                        help='Increase size of the pattern dataset by a selected factor using random preset')
+
+    parser.add_argument('--augmentation_preset', type=str, required=True,
+                        help='Selected augmentation preset')
 
     args = parser.parse_args()
-    return args.preset, int(args.size)
+    return args.json, int(args.augmentation_factor), args.augmentation_preset
 
 
-def create_random_dataset(preset_path, num_patterns):
+def create_dataset(json_folder_path, augmentation_factor, augmentation_preset_path):
     patterns = Queue()
-    config = RandomPatternConfig.from_json(preset_path)
+    config = RandomPatternConfig.from_json(augmentation_preset_path)
+
+    json_files = [
+        f for f in os.listdir(json_folder_path) if f.endswith(".json")
+    ]
+
+    total = len(json_files)
+    if augmentation_factor is not None:
+        total = total * augmentation_factor
 
     progress = Progress(
         "[progress.description]{task.description}",
@@ -33,17 +44,30 @@ def create_random_dataset(preset_path, num_patterns):
 
     with Live(progress, refresh_per_second=10):
         task_id = progress.add_task(
-            "[cyan]Generating Patterns...", total=num_patterns)
+            "[cyan]Generating Patterns...", total=total)
 
-        def create_random_pattern():
-            pattern = Pattern.create_random(config)
+        def load_pattern(file_name):
+            path = os.path.join(json_folder_path, file_name)
+            pattern = Pattern.from_json(path)
+            progress.update(task_id, advance=1)
+            return pattern
+
+        def load_and_modify_pattern(file_name):
+            path = os.path.join(json_folder_path, file_name)
+            pattern = Pattern.from_json(path)
+            pattern.fill_empty_sequences_with_random(config)
             progress.update(task_id, advance=1)
             return pattern
 
         with ThreadPoolExecutor(10) as executor:
-            futures = [
-                executor.submit(create_random_pattern) for _ in range(num_patterns)
-            ]
+            futures = []
+            for filename in json_files:
+                futures.append(executor.submit(load_pattern, f"{filename}"))
+
+                if augmentation_factor is not None:
+                    for _ in range(augmentation_factor):
+                        futures.append(executor.submit(
+                            load_and_modify_pattern, f"{filename}"))
 
         for future in as_completed(futures):
             pattern = future.result()
@@ -53,10 +77,9 @@ def create_random_dataset(preset_path, num_patterns):
 
 
 if __name__ == "__main__":
-    preset, num_patterns = parse_args()
-
+    json_folder, factor, preset = parse_args()
     preset_path = os.path.join("presets", preset + ".json")
-    dataset = create_random_dataset(preset_path, num_patterns)
+    dataset = create_dataset(json_folder, factor, preset_path)
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
     workspace_folder = os.path.abspath(os.path.join(script_dir, "..", ".."))
