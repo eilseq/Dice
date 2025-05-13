@@ -169,4 +169,4 @@ if __name__ == "__main__":
         json.dump(vars(args), outfile)
 
     console.print(Text(f"Saved at destination {
-                  destination_path + ".pth"}", style="yellow"))
+                  destination_path}.pth", style="yellow"))

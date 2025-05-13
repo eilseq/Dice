@@ -33,7 +33,7 @@ def ones_and_zeros_random_pattern_config():
 
 def test_MSE_valid_target_with_no_penalty(ones_and_zeros_random_pattern_config):
     pattern = Pattern.create_random(ones_and_zeros_random_pattern_config)
-    tensor = pattern.get_tensor()
+    tensor = pattern.get_trigger_tensor()
 
     mse_loss = MSELossWithPolyphonyRequirementsPenalty(
         config=ones_and_zeros_random_pattern_config
@@ -56,7 +56,7 @@ def test_MSE_invalid_target_with_penalty(ones_and_zeros_random_pattern_config):
 
 def test_L1_valid_target_with_no_penalty(ones_and_zeros_random_pattern_config):
     pattern = Pattern.create_random(ones_and_zeros_random_pattern_config)
-    tensor = pattern.get_tensor()
+    tensor = pattern.get_trigger_tensor()
 
     mse_loss = L1LossWithPolyphonyRequirementsPenalty(
         config=ones_and_zeros_random_pattern_config

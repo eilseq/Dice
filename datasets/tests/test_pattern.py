@@ -29,8 +29,42 @@ def ones_and_zeros_random_pattern_config():
     )
 
 
-def test_random_pattern_polyphony(ones_and_zeros_random_pattern_config):
-    pattern = Pattern.create_random(ones_and_zeros_random_pattern_config)
+@pytest.fixture
+def simple_pattern_dict():
+    return {
+        "triggers": {
+            "BD": [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+            "SD": [0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
+            "HH": [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+            "CH": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # empty
+        }
+    }
+
+
+def test_pattern_from_dictionary(simple_pattern_dict):
+    pattern = Pattern.from_dictionary(simple_pattern_dict)
+
+    assert len(pattern.sequences) == 4
+    assert set(pattern.get_labels()) == {"BD", "SD", "HH", "CH"}
+
+    tensor = pattern.get_trigger_tensor()
+    assert tensor.shape == (4, 16)
+    assert tensor[0].tolist() == simple_pattern_dict["triggers"]["BD"]
+    assert tensor[1].tolist() == simple_pattern_dict["triggers"]["SD"]
+    assert tensor[2].tolist() == simple_pattern_dict["triggers"]["HH"]
+    assert tensor[3].tolist() == simple_pattern_dict["triggers"]["CH"]
+
+
+def test_augmentation_using_random_config_settings(simple_pattern_dict, ones_and_zeros_random_pattern_config):
+    pattern = Pattern.from_dictionary(simple_pattern_dict)
+    empty_sequence = pattern.sequences[3]
+
+    assert empty_sequence.is_empty()
+
+    # Apply filling method
+    pattern.fill_empty_sequences_with_random(
+        ones_and_zeros_random_pattern_config)
+
     assert pattern.valid_polyphony_requirements(
         ones_and_zeros_random_pattern_config.max_polyphony,
         ones_and_zeros_random_pattern_config.max_num_events_with_full_polyphony) == True
