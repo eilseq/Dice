@@ -13,6 +13,15 @@ Built specifically for the Max/MSP environment as a max external, and embedded i
 
 ---
 
+<div style="text-align: center; margin-top: 2em;">
+  <video width="600" controls>
+    <source src="./assets/videos/dice_test.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+---
+
 # Functionalities
 
 Focusing on a minimal user experience, the goal of this tool is to bridge the gap between deterministic pattern manipulation and stochastic processes, allowing for a controlled but flexible approach to reshaping musical materials while limiting any form of bias related to style and genre.
