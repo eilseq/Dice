@@ -19,12 +19,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Load a DICE model")
     parser.add_argument('--id', type=str, required=True,
                         help='Model identifier')
-    parser.add_argument('--preset', type=str,
-                        required=True, help='Pattern preset')
     parser.add_argument('--architecture', type=str,
                         required=True, help='Model architecture')
-    parser.add_argument('--loss', type=str, required=True,
-                        help='Loss function')
     return parser.parse_args()
 
 
@@ -62,15 +58,6 @@ def inference_torch(model_tocrh, input_tensor):
     return outputs
 
 
-def get_workspace_path():
-    return os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", ".."))
-
-
-def get_dist_path():
-    return os.path.join(get_workspace_path(), "dist", "models")
-
-
 def loadDiceModel(model_torch_path, architecture: DiceArchitecture):
     state_dict = torch.load(model_torch_path, weights_only=False)
     match DiceArchitecture(architecture):
@@ -82,14 +69,24 @@ def loadDiceModel(model_torch_path, architecture: DiceArchitecture):
     return model
 
 
+def get_workspace_path():
+    return os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", ".."))
+
+
+def get_dist_path(id):
+    return os.path.join(get_workspace_path(), "dist", id)
+
+
 if __name__ == "__main__":
     console.print("[bold cyan]DICE Model Conversion - ONNX")
     args = parse_args()
     dummy_input = torch.randn(1, 1, 16, 16)
 
-    model_filename = f"{args.preset}-{args.architecture}-{args.loss}"
-    model_torch_path = os.path.join(get_dist_path(), model_filename + ".pth")
-    model_onnx_path = os.path.join(get_dist_path(), model_filename + ".onnx")
+    model_torch_path = os.path.join(
+        get_dist_path(args.id), args.id + ".pth")
+    model_onnx_path = os.path.join(
+        get_dist_path(args.id), args.id + ".onnx")
 
     model_torch = loadDiceModel(model_torch_path, args.architecture)
     model_torch.eval()

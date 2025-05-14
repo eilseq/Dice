@@ -29,8 +29,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Train a DICE model")
     parser.add_argument('--id', type=str, required=True,
                         help='Model identifier')
-    parser.add_argument('--preset', type=str,
-                        required=True, help='Pattern preset')
+    parser.add_argument('--augmentation_preset', type=str,
+                        required=True, help='Augmentation preset')
     parser.add_argument('--architecture', type=str,
                         required=True, help='Model architecture')
     parser.add_argument('--loss', type=str, required=True,
@@ -121,29 +121,30 @@ def train(epochs, dataset_config, dataloaders, model, criterion, optimizer, nois
     return accuracy
 
 
+def get_workspace_path():
+    return os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", ".."))
+
+
+def get_preset_path(preset):
+    return os.path.join(get_workspace_path(), "datasets", "presets", preset + ".json")
+
+
+def get_dist_path(id):
+    return os.path.join(get_workspace_path(), "dist", id)
+
+
 if __name__ == "__main__":
     console.print("[bold cyan]DICE Model Training")
     args = parse_args()
 
-    workspace_folder = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", ".."))
+    dataset_config = RandomPatternConfig.from_json(
+        get_preset_path(args.augmentation_preset))
 
-    dist_folder = os.path.join(workspace_folder, "dist")
-
-    presets_folder = os.path.join(workspace_folder, "datasets", "presets")
-    datasets_folder = os.path.join(dist_folder, "datasets")
-    models_folder = os.path.join(dist_folder, "models")
-
-    os.makedirs(models_folder, exist_ok=True)
     compiled_dataset_path = os.path.join(
-        "..", "dist", "datasets", args.preset + ".pt")
+        get_dist_path(args.id), args.id + ".pt")
 
-    dataset_config_path = os.path.join(presets_folder,  args.preset + ".json")
-    dataset_config = RandomPatternConfig.from_json(dataset_config_path)
-
-    compiled_dataset_path = os.path.join(datasets_folder, args.preset + ".pt")
     train_data, val_data, test_data = prepare_data(compiled_dataset_path)
-
     model = createDiceModel(args.architecture).to(device)
     accuracy = train(
         epochs=args.epochs,
@@ -160,13 +161,12 @@ if __name__ == "__main__":
     )
 
     console.print(Text(f"Final Accuracy: {accuracy:.2f}", style="bold green"))
+    args.accuracy = round(accuracy, 4)
 
-    model_filename = f"{args.preset}-{args.architecture}-{args.loss}"
-    destination_path = os.path.join(models_folder, model_filename)
-
+    destination_path = os.path.join(get_dist_path(args.id), args.id)
     torch.save(model.state_dict(), destination_path + ".pth")
     with open(destination_path + ".json", "w") as outfile:
         json.dump(vars(args), outfile)
 
     console.print(Text(f"Saved at destination {
-                  destination_path}.pth", style="yellow"))
+                  destination_path}", style="yellow"))

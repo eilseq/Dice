@@ -10,6 +10,9 @@ from rich.progress import Progress, Live, BarColumn, TimeElapsedColumn, TaskProg
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Process some inputs.")
+    parser.add_argument('--id', type=str, required=True,
+                        help='Selected folder containing patterns in JSON format')
+
     parser.add_argument('--json', type=str, required=True,
                         help='Selected folder containing patterns in JSON format')
 
@@ -20,7 +23,7 @@ def parse_args():
                         help='Selected augmentation preset')
 
     args = parser.parse_args()
-    return args.json, int(args.augmentation_factor), args.augmentation_preset
+    return args.json, int(args.augmentation_factor), args.augmentation_preset, args.id
 
 
 def create_dataset(json_folder_path, augmentation_factor, augmentation_preset_path):
@@ -76,16 +79,24 @@ def create_dataset(json_folder_path, augmentation_factor, augmentation_preset_pa
     return PatternDataset(list(patterns.queue))
 
 
+def get_preset_path(preset):
+    return os.path.join("presets", preset + ".json")
+
+
+def get_workspace_path():
+    return os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", ".."))
+
+
+def get_dist_path(id):
+    return os.path.join(get_workspace_path(), "dist", id)
+
+
 if __name__ == "__main__":
-    json_folder, factor, preset = parse_args()
-    preset_path = os.path.join("presets", preset + ".json")
-    dataset = create_dataset(json_folder, factor, preset_path)
+    json_folder, factor, preset, id = parse_args()
+    dataset = create_dataset(json_folder, factor, get_preset_path(preset))
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    workspace_folder = os.path.abspath(os.path.join(script_dir, "..", ".."))
+    os.makedirs(get_dist_path(id), exist_ok=True)
+    destination_path = os.path.join(get_dist_path(id), id + ".pt")
 
-    dist_folder = os.path.join(workspace_folder, "dist", "datasets")
-    os.makedirs(dist_folder, exist_ok=True)
-
-    destination_path = os.path.join(dist_folder, preset + ".pt")
     torch.save(dataset, destination_path)
