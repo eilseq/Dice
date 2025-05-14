@@ -36,12 +36,8 @@ pytest
 ### Generate Datasets
 
 ```
-python scripts/generate_datasets.py --preset default --size 100
+python scripts/generate_datasets.py --id test --json ./json --augmentation_preset default --augmentation_factor 3
 ```
-
-Script Arguments
---preset: Specifies the dataset pattern preset (default: default).
---size: Defines the size of the dataset to be generated (default: 100).
 
 ## License
 

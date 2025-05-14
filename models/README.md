@@ -36,13 +36,36 @@ pytest
 ### Train a Model
 
 ```
-python scripts/train_model.py --id test1 --preset default --architecture att_unet --loss mse_poly_penalty --noise_level 0.2
+python scripts/train_model.py --id test1 --augmentation_preset default --architecture att_unet --loss mse_poly_penalty --noise_level 0.2
 ```
 
 ### Export to ONNX
 
 ```
-python scripts/export_onnx.py --id test1 --preset default --architecture att_unet --loss mse_poly_penalty
+python scripts/export_onnx.py --id test --augmentation_preset default --architecture att_unet --loss mse_poly_penalty
+```
+
+### Run Experiments
+
+```
+[
+  {
+    "id": "default_unet_mse_noise_low",
+    "augmentation_preset": "default",
+    "architecture": "att_unet",
+    "loss": "mse_poly_penalty",
+    "noise_level": 0.1,
+    "batch_size": 32,
+    "epochs": 6,
+    "learning_rate": 0.001,
+    "augmentation_factor": 3
+  },
+  ... more experiments
+]
+```
+
+```
+python scripts/run_experiments.py
 ```
 
 ## License
